@@ -178,49 +178,31 @@ As you can see there's a bunch of Request types [here's a list of them](# Reques
 `from viber.api.api import Api`
 
 * [Api](#Api)
-    * [__init__(bot_configuration)](#new-Api())
-    * [.set_webhook(url, optional:webhook_events)](#set_webhook) ⇒ `None`
-    * [.unset_webhook()](#unset_webhook) ⇒ `None`
+    * [init(bot_configuration)](#new-Api())
+    * [.set_webhook(url, webhook_events)](#set_webhook) ⇒ `None`
+    * [.unset_webhook()](#unset_webhook) ⇒ `None`
     * [.get_account_info()](#get_account_info) ⇒ `object`
     * [.verify_signature(request_data, signature)](#verify_signature) ⇒ `boolean`
     * [.parse_request(request_data)](#parse_request) ⇒ `ViberRequest`
     * [.send_messages(to, messages)](#send_messages) ⇒ `list of message tokens sent`
 
-### new ViberBot()
+<a name="new-Api()"></a>
+### new Api()
 
 | Param | Type | Description |
 | --- | --- | --- |
-| logger | `object` | Winston logger |
-| options.authToken | `string` | Viber Auth Token  |
-| options.name | `string` | Your BOT Name |
-| options.avatar | `string` | Avatar URL. **No more than 100kb.** |
+| bot_configuration | `object` | [BotConfiguration](#BotConfiguration) |
 
-<a name="onEvent"></a>
-### bot.on(handler)
-`require('@viber/viber-bot').Events`
+<a name="setWebhook"></a>
+### Api.setWebhook(url)
+| Param | Type | Description |
+| --- | --- | --- |
+| url | `string` | Your webserver url |
+| webhook_events | `list` | optional list of subscribed events |
 
-| Param | Type |
-| --- | --- |
-| handler | `EventHandlerCallback` |
-| message | [`Message Object`](#MessageObject) |
-| response | [`Response Object`](#ResponseObject) |
-| err | `Error Object` |
-
-Subscribe to events:
-* MESSAGE_RECEIVED (Callback:  `function (event, message, response) {}`)
-* SUBSCRIBED (Callback:  `function (event, response) {}`)
-* UNSUBSCRIBED (Callback:  `function (event, response) {}`)
-* CONVERSATION_STARTED (Callback:  `function (event, response) {}`)
-* ERROR (Callback:  `function (event, err) {}`)
-
-**Example**
-```js
-bot.on(BotEvents.MESSAGE_RECEIVED, (event, message, response) => ... );
-bot.on(BotEvents.CONVERSATION_STARTED, (event, message, response) => ... );
-bot.on(BotEvents.ERROR, (event, err) => ... );
-bot.on(BotEvents.UNSUBSCRIBED, (event, response) => ... );
-bot.on(BotEvents.SUBSCRIBED, (event, response) =>
-    response.send(`Thanks for subscribing, ${response.userProfile.name}`));
+Returns `None`. **Example**
+```python
+viber.set_webhook('https://mywebserver.com/incoming')
 ```
 
 <a name="getProfile"></a>
@@ -228,17 +210,6 @@ bot.on(BotEvents.SUBSCRIBED, (event, response) =>
 Returns a `promise.JSON` ([With the following JSON](https://developers.viber.com/customer/en/portal/articles/2541122-get-account-info?b_id=15145)). **Example**
 ```js
 bot.getProfile().then(response => console.log(`Public Account Named: ${response.name}`));
-```
-
-<a name="setWebhook"></a>
-### bot.setWebhook(url)
-| Param | Type | Description |
-| --- | --- | --- |
-| url | `string` | Trusted SSL Certificate |
-
-Returns a `promise.JSON`. **Example**
-```js
-bot.setWebhook("https://my.bot/incoming").then(() => yourBot.doSomething()).catch(err => console.log(err));
 ```
 
 <a name="sendMessage"></a>
