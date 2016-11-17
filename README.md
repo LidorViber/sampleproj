@@ -117,25 +117,74 @@ Every one of them is already modeled:
 Creating them is easy! Every message object has it's own unique constructor corresponding to it's API implementation, click on them to see it!
 Check out the full API documentation for more advanced uses.
 
+### Let's add it all up and reply with a message!
+```python
+from flask import Flask, request, Response
+from viber.api.api import Api
+from viber.api.bot_configuration import BotConfiguration
+from viber.api.messages import VideoMessage
+from viber.api.messages.text_message import TextMessage
+import logging
+
+from viber.api.viber_requests import ViberConversationStartedRequest
+from viber.api.viber_requests import ViberFailedRequest
+from viber.api.viber_requests import ViberMessageRequest
+from viber.api.viber_requests import ViberSubscribedRequest
+from viber.api.viber_requests import ViberUnsubscribedRequest
+
+app = Flask(__name__)
+viber = Api(BotConfiguration(
+	name='PythonSampleBot',
+	avatar='http://site.com/avatar.jpg',
+	auth_token='451798a889a17401-865360a5474b3993-8fe73f00b019c611'
+))
+
+
+@app.route('/incoming', methods=['POST'])
+def incoming():
+	logger.debug("received request. post data: {0}".format(request.get_data()))
+	# every viber message is signed, you can verify the signature using this method
+	if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
+		return Response(status=403)
+	
+	# this library supplies a simple way to receive a request object
+	viber_request = viber.parse_request(request.get_data())
+
+	if isinstance(viber_request, ViberMessageRequest):
+		message = viber_request.get_message()
+		# lets echo back 
+		viber.send_messages(viber_request.get_sender().get_id(), [
+			message
+		])
+	elif isinstance(viber_request, ViberSubscribedRequest):
+		viber.send_messages(viber_request.get_user().get_id(), [
+			TextMessage(text="thanks for subscribing!")
+		])
+	elif isinstance(viber_request, ViberFailedRequest):
+		logger.warn("client failed receiving message. failure: {0}".format(viber_request))
+
+	return Response(status=200)
+
+if __name__ == "__main__":
+	context = ('server.crt', 'server.key')
+	app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
+
+```
+
+As you can see there's a bunch of Request types [here's a list of them](# RequestTypes).
+
 ## API
-### Viber Bot
-`require('@viber/viber-bot').Bot`
+### Api
+`from viber.api.api import Api`
 
-An event emitter, emitting events [described here](#onEvent).
-
-* [ViberBot](#ViberBot)
-    * [new ViberBot()](#new-ViberBot())
-    * [.getProfile()](#getProfile) ⇒ `promise.JSON`
-    * [.setWebhook(url)](#setWebhook) ⇒ `promise.JSON`
-    * [.sendMessage(userProfile, messages, [optionalTrackingData])](#sendMessage) ⇒ `promise.ARRAY`
-    * [.on(handler)](#onEvent)
-    * [.onTextMessage(regex, handler)](#onTextMessage) : `handler` = [`TextMessageHandlerCallback`](#TextMessageHandlerCallback)
-    * [.onError(handler)](#onError) : `handler` = [`ErrorHandlerCallback`](#ErrorHandlerCallback)
-    * [.onConversationStarted(userProfile, onFinish)](#onConversationStarted) : `onFinish` = [`ConversationStartedOnFinishCallback`](#ConversationStartedOnFinishCallback)
-    * [.onSubscribe(handler)](#onSubscribe) : `handler` = [`ResponseHandlerCallback`](#ResponseHandlerCallback)
-    * [.onUnsubscribe(handler)](#onUnsubscribe) : `handler` = [`ResponseHandlerCallback`](#ResponseHandlerCallback)
-    * [.middleware()](#middleware)
-
+* [Api](#Api)
+    * [__init__(bot_configuration)](#new-Api())
+    * [.set_webhook(url, [optional:webhook_events])](#set_webhook) ⇒ `None`
+    * [.unset_webhook()](#unset_webhook) ⇒ `None`
+    * [.get_account_info()](#get_account_info) ⇒ `object`
+    * [.verify_signature(request_data, signature)](#verify_signature) ⇒ `boolean`
+    * [.parse_request(request_data)](#parse_request) ⇒ `ViberRequest`
+    * [.send_messages(to, messages)](#send_messages) ⇒ `list of message tokens sent`
 
 ### new ViberBot()
 
