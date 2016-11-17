@@ -21,10 +21,60 @@ Creating a basic Viber bot is simple:
 4. Start your web server
 5. Call set_webhook(url) with your webserver url
 
-### A simple Echo Bot:
-Firstly, let's *import and configure* our bot:
+## A simple Echo Bot:
+### Firstly, let's *import and configure* our bot:
 ```python
-the code will be here
+from viber.api.api import Api
+from viber.api.bot_configuration import BotConfiguration
+
+bot_configuration = BotConfiguration(
+	name='PythonSampleBot',
+	avatar='http://site.com/avatar.jpg',
+	auth_token='451798a889a17401-865360a5474b3993-8fe73f00b019c611'
+)
+viber = Api(bot_configuration)
+```
+
+### create an https server
+next thing you should do is starting a https server.
+and yes, as we said in the [Library Prerequisites](#Library Prerequisites) it has to be https server.
+create a server however you like, for example with Flask:
+
+```python
+from flask import Flask, request, Response
+
+app = Flask(__name__)
+
+@app.route('/incoming', methods=['POST'])
+def incoming():
+	logger.debug("received request. post data: {0}".format(request.get_data()))
+	# handle the request here
+	return Response(status=200)
+	
+context = ('server.crt', 'server.key')
+app.run(host='0.0.0.0', port=443, debug=True, ssl_context=context)
+
+```
+
+### Setting a webhook
+After the server is up and kickin' you can set a webook.
+Viber will push messages sent to this URL. Webserver should be internet-facing.
+
+```python
+viber.set_webhook('https://mybotwebserver.com/incoming')
+```
+
+### Logging
+This library uses the standard python logger.
+if you want to see its logs you can configure the logger
+
+```python
+logger = logging.getLogger()
+logger.setLevel(logging.DEBUG)
+handler = logging.StreamHandler()
+formatter = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+handler.setFormatter(formatter)
+logger.addHandler(handler)
 ```
 
 ### Do you supply a basic types of messages ?
