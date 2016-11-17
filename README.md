@@ -179,7 +179,7 @@ As you can see there's a bunch of Request types [here's a list of them](# Reques
 
 * [Api](#Api)
     * [__init__(bot_configuration)](#new-Api())
-    * [.set_webhook(url, [optional:webhook_events])](#set_webhook) ⇒ `None`
+    * [.set_webhook(url, optional:webhook_events)](#set_webhook) ⇒ `None`
     * [.unset_webhook()](#unset_webhook) ⇒ `None`
     * [.get_account_info()](#get_account_info) ⇒ `object`
     * [.verify_signature(request_data, signature)](#verify_signature) ⇒ `boolean`
