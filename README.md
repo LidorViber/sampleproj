@@ -172,8 +172,8 @@ if __name__ == "__main__":
 
 As you can see there's a bunch of Request types [here's a list of them](# RequestTypes).
 
-## API
-### Api
+## Viber API
+### Api class
 `from viber.api.api import Api`
 
 * [Api](#Api)
@@ -476,7 +476,7 @@ message = VideoMessage(media="http://site.com/video.mp4", size=21499)
 ```python
 from viber.api.messages.data_types.location import Location
 
-location = Location(lat=0, lon=0)
+location = Location(lat=0.0, lon=0.0)
 location_message = LocationMessage(location=location)
 ```
 
