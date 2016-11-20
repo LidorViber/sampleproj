@@ -262,16 +262,39 @@ tokens = viber.send_messages(to=viber_request.get_sender().get_id(),
 ```
 
 
-<a name="ResponseObject"></a>
-### Response object
+<a name="ViberRequest"></a>
+### Request object
 Members:
 
 | Param | Type | Notes |
 | --- | --- | --- |
-| userProfile | [`UserProfile`](#UserProfile) | --- |
+| event_type | `string` | according to [EventTypes](#EventTypes) |
+| timestamp | `long` | Epoch of request time |
 
-* [Response](#Response)
-    * [.send(messages, [optionalTrackingData])](#sendMessage) ⇒ `promise.JSON`
+* [ViberRequest](#ViberRequest)
+    * .get_event_type() ⇒ `string`
+    * .get_timestamp() ⇒ `long`
+    
+All of the Request objects listed below are [listed in Viber developers site](https://developers.viber.com/customer/en/portal/articles/2541267-callbacks?b_id=15145)
+#### ViberConversationStartedRequest object
+inherits from [ViberRequest](#ViberRequest)
+
+Members:
+
+| Param | Type | Notes |
+| --- | --- | --- |
+| event_type | `string` | always equals to the value of EventType.CONVERSATION_STARTED |
+| message_token | `string` |  |
+| type | `string` |  |
+| context | `string` |  |
+| user | `UserProfile` | the user started the conversation [UserProfile](#UserProfile) |
+
+* [ViberRequest](#ViberRequest)
+    * get_message_token() ⇒ `string`
+    * get_type() ⇒ `string`
+    * get_context() ⇒ `string`
+    * get_user() ⇒ `UserProfile`
+    
 
 <a name="UserProfile"></a>
 ### UserProfile object
