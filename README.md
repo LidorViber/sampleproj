@@ -284,17 +284,106 @@ Members:
 | Param | Type | Notes |
 | --- | --- | --- |
 | event_type | `string` | always equals to the value of EventType.CONVERSATION_STARTED |
-| message_token | `string` |  |
-| type | `string` |  |
-| context | `string` |  |
+| message_token | `string` | Unique ID of the message |
+| type | `string` | The specific type of conversation_started event. |
+| context | `string` | Any additional parameters added to the deep link used to access the conversation passed as a string |
 | user | `UserProfile` | the user started the conversation [UserProfile](#UserProfile) |
 
-* [ViberRequest](#ViberRequest)
+* [ViberConversationStartedRequest](#ViberConversationStartedRequest)
     * get_message_token() ⇒ `string`
     * get_type() ⇒ `string`
     * get_context() ⇒ `string`
     * get_user() ⇒ `UserProfile`
     
+#### ViberDeliveredRequest object
+inherits from [ViberRequest](#ViberRequest)
+
+Members:
+
+| Param | Type | Notes |
+| --- | --- | --- |
+| event_type | `string` | always equals to the value of EventType.DELIVERED |
+| message_token | `string` | Unique ID of the message |
+| user_id | `string` | Unique Viber user id |
+
+* [ViberDeliveredRequest](#ViberDeliveredRequest)
+    * get_message_token() ⇒ `string`
+    * get_user_id() ⇒ `string`
+    
+#### ViberFailedRequest object
+inherits from [ViberRequest](#ViberRequest)
+
+Members:
+
+| Param | Type | Notes |
+| --- | --- | --- |
+| event_type | `string` | always equals to the value of EventType.FAILED |
+| message_token | `string` | Unique ID of the message |
+| user_id | `string` | Unique Viber user id |
+| desc | `string` | Failure description |
+
+* [ViberFailedRequest](#ViberFailedRequest)
+    * get_message_token() ⇒ `string`
+    * get_user_id() ⇒ `string`
+    * get_desc() ⇒ `string` 
+
+#### ViberMessageRequest object
+inherits from [ViberRequest](#ViberRequest)
+
+Members:
+
+| Param | Type | Notes |
+| --- | --- | --- |
+| event_type | `string` | always equals to the value of EventType.MESSAGE |
+| message_token | `string` | Unique ID of the message |
+| message | `Message` | `Message` object |
+| sender | `UserProfile` | the user started the conversation [UserProfile](#UserProfile) |
+
+* [ViberMessageRequest](#ViberMessageRequest)
+    * get_message_token() ⇒ `string`
+    * get_message() ⇒ `Message`
+    * get_sender() ⇒ `UserProfile`
+    
+#### ViberSeenRequest object
+inherits from [ViberRequest](#ViberRequest)
+
+Members:
+
+| Param | Type | Notes |
+| --- | --- | --- |
+| event_type | `string` | always equals to the value of EventType.SEEN |
+| message_token | `string` | Unique ID of the message |
+| user_id | `string` | Unique Viber user id |
+
+* [ViberSeenRequest](#ViberSeenRequest)
+    * get_message_token() ⇒ `string`
+    * get_user_id() ⇒ `string`
+
+#### ViberSubscribedRequest object
+inherits from [ViberRequest](#ViberRequest)
+
+Members:
+
+| Param | Type | Notes |
+| --- | --- | --- |
+| event_type | `string` | always equals to the value of EventType.SUBSCRIBED |
+| user | `UserProfile` | the user started the conversation [UserProfile](#UserProfile) |
+
+* [ViberSubscribedRequest](#ViberSubscribedRequest)
+    * get_user() ⇒ `UserProfile`
+
+#### ViberUnsubscribedRequest object
+inherits from [ViberRequest](#ViberRequest)
+
+Members:
+
+| Param | Type | Notes |
+| --- | --- | --- |
+| event_type | `string` | always equals to the value of EventType.UNSUBSCRIBED |
+| user_id | `string` | Unique Viber user id |
+
+* [ViberUnsubscribedRequest](#ViberUnsubscribedRequest)
+    * get_user_id() ⇒ `string`
 
 <a name="UserProfile"></a>
 ### UserProfile object
@@ -310,22 +399,13 @@ Members:
 
 <a name="MessageObject"></a>
 ### Message Object
-```javascript
-const TextMessage     = require('@viber/viber-bot').Message.Text;
-const UrlMessage      = require('@viber/viber-bot').Message.Url;
-const ContactMessage  = require('@viber/viber-bot').Message.Contact;
-const PictureMessage  = require('@viber/viber-bot').Message.Picture;
-const VideoMessage    = require('@viber/viber-bot').Message.Video;
-const LocationMessage = require('@viber/viber-bot').Message.Location;
-const StickerMessage  = require('@viber/viber-bot').Message.Sticker;
-```
 
 **Common Members for `Message` interface**:
 
 | Param | Type | Description |
 | --- | --- | --- |
 | timestamp | `long` | Epoch time |
-| token | `long` | Sequential message token |
+| keyboard | `JSON` | keyboard JSON |
 | trackingData | `JSON` | JSON Tracking Data from Viber Client |
 
 **Common Constructor Arguments `Message` interface**:
@@ -340,76 +420,74 @@ const StickerMessage  = require('@viber/viber-bot').Message.Sticker;
 | Member | Type
 | --- | --- |
 | text | `string` |
-```javascript
-const message = new TextMessage(text, [optionalKeyboard], [optionalTrackingData]);
-console.log(message.text);
+```python
+message = TextMessage(text="my text message")
 ```
 
 <a name="UrlMessage"></a>
-#### UrlMessage object
-| Member | Type
-| --- | --- |
-| url | `string` |
-```javascript
-const message = new UrlMessage(url, [optionalKeyboard], [optionalTrackingData]);
-console.log(message.url);
+#### URLMessage object
+| Member | Type | Description |
+| --- | --- | --- |
+| media | `string` | URL string | 
+```python
+message = URLMessage(media="http://my.siteurl.com");
 ```
 
 <a name="ContactMessage"></a>
 #### ContactMessage object
 | Member | Type
 | --- | --- |
-| contactName | `string` |
-| contactPhoneNumber | `string` |
-```javascript
-const message = new ContactMessage(contactName, contactPhoneNumber, [optionalKeyboard], [optionalTrackingData]);
-console.log(`${message.contactName}, ${message.contactPhoneNumber}`);
+| contact | `Contact` |
+
+```python
+from viber.api.messages.data_types.contact import Contact
+
+contact = Contact(name="viber user", phone_number="+972488467539")
+contact_message = ContactMessage(contact=contact)
 ```
 
 <a name="PictureMessage"></a>
 #### PictureMessage object
-| Member | Type
-| --- | --- |
-| url | `string` |
-| text | `string` |
-| thumbnail | `string` |
-```javascript
-const message = new ContactMessage(url, [optionalText], [optionalThumbnail], [optionalKeyboard], [optionalTrackingData]);
-console.log(`${message.url}, ${message.text}, ${message.thumbnail}`);
+| Member | Type | Description |
+| --- | --- | --- |
+| media | `string` | url of the message (jpeg only) |
+| text | `string` |  |
+| thumbnail | `string` |  |
+```python
+message = PictureMessage(media="http://www.thehindubusinessline.com/multimedia/dynamic/01458/viber_logo_JPG_1458024f.jpg", text="viber logo")
 ```
 
 <a name="VideoMessage"></a>
 #### VideoMessage object
-| Member | Type
-| --- | --- |
-| url | `string` |
-| size | `int` |
-| thumbnail | `string` |
-| duration | `int` |
+| Member | Type | Description |
+| --- | --- | --- |
+| media | `string` | url of the video |
+| size | `int` |  |
+| thumbnail | `string` |  |
+| duration | `int` |  |
 ```javascript
-const message = new VideoMessage(url, size, [optionalThumbnail], [optionalDuration], [optionalKeyboard], [optionalTrackingData]);
-console.log(`${message.url}, ${message.size}, ${message.thumbnail}, ${message.duration}`);
+message = VideoMessage(media="http://site.com/video.mp4", size=21499)
 ```
 
 <a name="LocationMessage"></a>
 #### LocationMessage object
 | Member | Type
 | --- | --- |
-| latitude | `float` |
-| longitude | `float` |
-```javascript
-const message = new LocationMessage(latitude, longitude, [optionalKeyboard], [optionalTrackingData]);
-console.log(`${message.latitude}, ${message.longitude}`);
+| location | `Location` |
+```python
+from viber.api.messages.data_types.location import Location
+
+location = Location(lat=0, lon=0)
+location_message = LocationMessage(location=location)
 ```
 
 <a name="StickerMessage"></a>
 #### StickerMessage object
 | Member | Type
 | --- | --- |
-| stickerId | `int` |
-```javascript
-const message = new StickerMessage(stickerId, [optionalKeyboard], [optionalTrackingData]);
-console.log(message.stickerId);
+| sticker_id | `int` |
+```python
+message = StickerMessage(sticker_id=40100);
 ```
 
 ## Useful links:
