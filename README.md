@@ -193,8 +193,8 @@ As you can see there's a bunch of Request types [here's a list of them](# Reques
 | --- | --- | --- |
 | bot_configuration | `object` | [BotConfiguration](#BotConfiguration) |
 
-<a name="setWebhook"></a>
-### Api.setWebhook(url)
+<a name="set_webhook"></a>
+### Api.set_webhook(url)
 | Param | Type | Description |
 | --- | --- | --- |
 | url | `string` | Your webserver url |
@@ -205,40 +205,40 @@ Returns `None`. **Example**
 viber.set_webhook('https://mywebserver.com/incoming')
 ```
 
-<a name="getProfile"></a>
-### bot.getProfile()
-Returns a `promise.JSON` ([With the following JSON](https://developers.viber.com/customer/en/portal/articles/2541122-get-account-info?b_id=15145)). **Example**
-```js
-bot.getProfile().then(response => console.log(`Public Account Named: ${response.name}`));
+<a name="unset_webhook"></a>
+### Api.unset_webhook()
+Returns `None`. **Example**
+```python
+viber.unset_webhook()
 ```
 
-<a name="sendMessage"></a>
-### bot.sendMessage(userProfile, messages, [optionalTrackingData])
+<a name="
+">get_account_info</a>
+### Api.get_account_info()
+Returns an `object` ([Formmated from the following JSON](https://developers.viber.com/customer/en/portal/articles/2541122-get-account-info?b_id=15145)). **Example**
+```python
+account_info = viber.get_account_info()
+```
+
+<a name="verify_signature"></a>
+### Api.verify_signature(request_data, signature)
 | Param | Type | Description |
 | --- | --- | --- |
-| userProfile | [`UserProfile`](#UserProfile) | `UserProfile` object |
-| Messages | `object or array` | Can be `Message` object or array of `Message` objects |
-| [optionalTrackingData] | `JSON` | Optional. JSON Object. Returned on every message sent by the client |
+| request_data | `string` | the post data from request |
+| signature | `string` | sent as header `X-Viber-Content-Signature` |
 
-*Note*: When passing array of messages to sendMessage, messages will be sent by explicit order (the order which they were given to the sendMessage method). The library will also cancel all custom keyboards except the last one, sending only the last message keyboard.
 
-Returns a `promise.ARRAY` array of message tokens. **Example**
-```js
-// single message
-const TextMessage = require('@viber/viber-bot').Message.Text;
-bot.sendMessage(userProfile, new TextMessage("Thanks for shopping with us"));
-
-// multiple messages
-const UrlMessage  = require('@viber/viber-bot').Message.Url;
-bot.sendMessage(userProfile, [
-    new TextMessage("Here's the product you've requested:"),
-    new UrlMessage("http://my.ecommerce.site/product1"),
-    new TextMessage("Shipping time: 1-3 business days")
-]);
+Returns a `boolean` suggesting if the signature is valid. **Example**
+```python
+if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-Content-Signature')):
+	return Response(status=403)
 ```
 
-<a name="middleware"></a>
-### bot.middleware()
+<a name="parse_Request"></a>
+### Api.parse_request(request_data)
+
+
+
 Returns a middleware to use with `http/https`. **Example**
 ```js
 const https = require('https');
