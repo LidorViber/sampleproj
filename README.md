@@ -234,75 +234,33 @@ if not viber.verify_signature(request.get_data(), request.headers.get('X-Viber-C
 	return Response(status=403)
 ```
 
-<a name="parse_Request"></a>
+<a name="parse_request"></a>
 ### Api.parse_request(request_data)
+| Param | Type | Description |
+| --- | --- | --- |
+| request_data | `string` | the post data from request |
 
+Returns a `ViberRequest` object. **Example**
 
+There's a list of [ViberRequest objects](#ViberRequest)
 
-Returns a middleware to use with `http/https`. **Example**
-```js
-const https = require('https');
-https.createServer({ key: ... , cert: ... , ca: ... }, bot.middleware()).listen(8080);
+```python
+viber_request = viber.parse_request(request.get_data())
 ```
 
-<a name="onTextMessage"></a>
-### bot.onTextMessage(regex, handler)
-| Param | Type |
-| --- | --- |
-| regex | `regular expression` |
-| handler | [`TextMessageHandlerCallback`](#TextMessageHandlerCallback) |
+<a name="send_messages"></a>
+### Api.send_messages(to, messages)
+| Param | Type | Description |
+| --- | --- | --- |
+| to | `string` | receiver viberId |
+| messages | `list` | list of `Message` objects |
 
-<a name="TextMessageHandlerCallback"></a>
-##### TextMessageHandlerCallback: `function (message, response) {}`
-**Example**
-```js
-bot.onTextMessage(/^hi|hello$/i, (message, response) =>
-    response.send(new TextMessage(`Hi there ${response.userProfile.name}. I am ${bot.name}`)));
+Returns `list` of message tokens of the messages sent. **Example**
+```python
+tokens = viber.send_messages(to=viber_request.get_sender().get_id(),
+			     messages=[TextMessage(text="sample message")])
 ```
 
-<a name="onError"></a>
-### bot.onError(handler)
-| Param | Type |
-| --- | --- |
-| handler | [`ErrorHandlerCallback`](#ErrorHandlerCallback) |
-
-<a name="ErrorHandlerCallback"></a>
-##### ErrorHandlerCallback: `function (event, err) {}`
-**Example**
-```js
-bot.onError((event, err) => logger.error(err));
-```
-
-<a name="onConversationStarted"></a>
-### bot.onConversationStarted(userProfile, onFinish)
-| Param | Type |
-| --- | --- |
-| userProfile | [`UserProfile`](#UserProfile) |
-| onFinish | [`ConversationStartedOnFinishCallback`](#ConversationStartedOnFinishCallback) |
-
-*Note*: onConversationStarted event happens once when A Viber client opens the conversation with your bot for the first time. Callback accepts `null` and [`MessageObject`](#MessageObject) only. Otherwise, an exception is thrown.
-
-<a name="ConversationStartedOnFinishCallback"></a>
-##### ConversationStartedOnFinishCallback: `function (responseMessage) {}`
-**Example**
-```js
-bot.onConversationStarted((userProfile, onFinish) =>
-	onFinish(new TextMessage(`Hi, ${userProfile.name}! Nice to meet you.`)));
-```
-
-<a name="onSubscribe"></a><a name="onUnsubscribe"></a>
-### bot.onSubscribe(handler) & bot.onUnsubscribe(handler)
-| Param | Type |
-| --- | --- |
-| handler | [`ResponseHandlerCallback`](#ResponseHandlerCallback) |
-
-<a name="ResponseHandlerCallback"></a>
-##### ResponseHandlerCallback: `function (event, response) {}`
-**Example**
-```js
-bot.onSubscribe((event, response) => console.log(`Subscribed: ${response.userProfile.name}`));
-bot.onUnsubscribe((event, response) => console.log(`Unsubscribed: ${response.userProfile.name}`));
-```
 
 <a name="ResponseObject"></a>
 ### Response object
