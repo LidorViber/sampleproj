@@ -6,8 +6,7 @@ Please visit [Getting Started](https://developers.viber.com/customer/en/portal/a
 This library is released under the terms of the Apache license. See [License](LICENSE.md) for more information.
 
 ## Library Prerequisites
-* Node >= 5.0.0
-* Winston >= 2.0.0
+* python >= 2.7.0 
 * [Viber Auth Token](https://developers.viber.com/customer/en/portal/articles/2554141-create-a-public-account?b_id=15145).
 * Certification - You'll need a trusted (ca.pem) certificate, not self-signed. You can find one at [Let's Encrypt](https://letsencrypt.org/) or buy one.
 
